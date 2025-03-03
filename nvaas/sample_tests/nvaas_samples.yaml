@@ -1,0 +1,35 @@
+name: "bgp_neighbors_status"
+description: "Test status of BGP neighbors"
+type: "static"
+commands:
+  - command: "show bgp neighbors"
+  - key: "state"
+  - match_type: "exact"
+  - match_value: "Established"
+filters:
+  - fields: 
+    - device.tags: "sys.ftr.bgp"
+    - match_type: "contains"
+
+name: "bgp_prefixes_received"
+description: "Test difference in number of prefixes received from peers"
+type: "diff"
+commands:
+  - command: "show bgp neighbors"
+  - key: "prefix_received"
+  - match_type: "tolerance_percent"
+  - match_value: 20
+  - regex: '^(\d+)%$'
+filters:
+  - fields: 
+    - tags: "sys.ftr.bgp"
+    - match_type: "contains"
+
+name: "memory_usage"
+description: "Test memory usage"
+type: "static"
+commands:
+  - command: "show memory"
+  - key: "usage"
+  - match_type: "max_value"
+  - match_value: 80
